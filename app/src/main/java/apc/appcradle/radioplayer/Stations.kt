@@ -23,5 +23,7 @@ val playlist = listOf<Station>(
     Station("Record Workout","https://radiorecord.hostingradio.ru/workout32.aacp"),
     Station("Alternative metal","http://galnet.ru:8000/hard"),
     Station("101 Modern Rock","https://srv01.gpmradio.ru/stream/pro/aac/64/16?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiI0ZjFlMjhjNzliMzY5MTM0OTk2ZGMyYWY2ZmY0NWUxOCIsIklQIjoiMjEyLjMuMTMwLjExMiIsIlVBIjoiTW96aWxsYS81LjAgKE1hY2ludG9zaDsgSW50ZWwgTWFjIE9TIFggMTBfMTVfNykgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzMS4wLjAuMCBTYWZhcmkvNTM3LjM2IiwiUmVmIjoiaHR0cHM6Ly8xMDEucnUvIiwidWlkX2NoYW5uZWwiOiIxNiIsInR5cGVfY2hhbm5lbCI6ImNoYW5uZWwiLCJ0eXBlRGV2aWNlIjoiUEMiLCJCcm93c2VyIjoiQ2hyb21lIiwiQnJvd3NlclZlcnNpb24iOiIxMzEuMC4wLjAiLCJTeXN0ZW0iOiJNYWMgT1MgWCBQdW1hIiwiZXhwIjoxNzMzNDY2ODQ3fQ.F7fvxSg7bgV8ruI_XMvSTcS4eO6lEyQxQ9pAyKUNzrU"),
+    Station("Anime №1","https://relay.radionami.com/any-anime.ru"),
+    Station("Anime ANISON","https://pool.anison.fm/AniSonFM(320)?nocache=0.18690744032766804"),
     Station("DFM","https://dfm.hostingradio.ru/dfm96.aacp")
 )

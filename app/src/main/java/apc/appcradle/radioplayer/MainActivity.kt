@@ -71,6 +71,8 @@ class MainActivity : AppCompatActivity() {
                         ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
                 }
                 if (!mediaPlayer.isPlaying || previousPosition != position) {
+                    previousContainer?.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
                     previousPosition = position
                     previousProgress = progressBar
                     previousContainer = container
@@ -84,6 +86,8 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.e("log", "плеер не установился")
                     mediaPlayer.pause()
+                    previousContainer?.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
                     playButton.setImageResource(R.drawable.baseline_play_circle_24)
                     previousPlayButton = null
                     previousPosition = null

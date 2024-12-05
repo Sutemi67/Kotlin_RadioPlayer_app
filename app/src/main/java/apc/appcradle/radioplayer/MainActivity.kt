@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val mediaPlayer = MediaPlayer()
     private val adapter = RadioAdapter()
     private lateinit var recycler: RecyclerView
+    private var playButtonGlobal: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +45,15 @@ class MainActivity : AppCompatActivity() {
         adapter.setPlayer = object : SetPlayerInterface {
             override fun setPlayer(position: Int, progressBar: View, playButton: ImageView) {
                 if (!mediaPlayer.isPlaying) {
+                    playButtonGlobal = playButton
                     Log.e("log", "пошла установка плеера")
                     progressBar.isVisible = true
                     playButton.setImageResource(R.drawable.baseline_stop_circle_24)
                     setPlayerStation(playlist[position], progressBar)
                 } else {
+                    Log.e("log", "плеер не установился")
                     mediaPlayer.pause()
                     playButton.setImageResource(R.drawable.baseline_play_circle_24)
-
                 }
             }
         }
@@ -64,10 +67,11 @@ class MainActivity : AppCompatActivity() {
                 setDataSource(station.url)
                 prepareAsync()
             }
-
         } catch (e: IOException) {
-            e.printStackTrace()
+            Toast.makeText(this, "Радио не работает", Toast.LENGTH_SHORT).show()
             Log.e("log", "плеер не настроен")
+            progressBar.isVisible = false
+            e.printStackTrace()
         }
 
         mediaPlayer.setOnPreparedListener { mediaPlayer ->

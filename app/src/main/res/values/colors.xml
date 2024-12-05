@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="warning_line">#FF000000</color>
+    <color name="playing_shape">#7E448CCB</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

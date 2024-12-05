@@ -12,16 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Привет!\nСейчас радиостанции могут долго грузиться, но не больше минуты. Если перед переключением на другую станцию выключать предыдущую, то не будет ошибок интерфейса ;)\nПриятного пользования, отзывы можно в группу."
+        android:text="Привет!\nСейчас радиостанции могут долго грузиться, но не больше минуты.\nПриятного пользования, отзывы можно в группу."
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:id="@+id/line"
         android:layout_marginTop="20dp"
         android:background="@color/warning_line"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,8 +31,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line"

@@ -15,6 +15,7 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val stationName: TextView = itemView.findViewById(R.id.radiostation_name)
     private val stationButton: ImageView = itemView.findViewById(R.id.playButton)
     private val progressBar: View = itemView.findViewById(R.id.progress)
+    private val container: View = itemView.findViewById(R.id.main_container)
 
     fun bind(model: Station) {
         stationName.text = model.name
@@ -22,6 +23,7 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun getProgressBar(): View = progressBar
     fun getPlayButton(): ImageView = stationButton
+    fun getContainer(): View = container
 }
 
 class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback()) {
@@ -50,7 +52,8 @@ class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback
         holder.itemView.setOnClickListener {
             val progressBar = holder.getProgressBar()
             val stationButton = holder.getPlayButton()
-            setPlayer?.setPlayer(position, progressBar, stationButton)
+            val container = holder.getContainer()
+            setPlayer?.setPlayer(position, progressBar, stationButton, container)
         }
     }
 

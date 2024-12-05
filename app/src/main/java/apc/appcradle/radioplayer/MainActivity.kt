@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -23,7 +24,11 @@ class MainActivity : AppCompatActivity() {
     private val mediaPlayer = MediaPlayer()
     private val adapter = RadioAdapter()
     private lateinit var recycler: RecyclerView
-    private var playButtonGlobal: ImageView? = null
+
+    private var previousPlayButton: ImageView? = null
+    private var previousProgress: View? = null
+    private var previousContainer: View? = null
+    private var previousPosition: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,17 +48,36 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
 
         adapter.setPlayer = object : SetPlayerInterface {
-            override fun setPlayer(position: Int, progressBar: View, playButton: ImageView) {
-                if (!mediaPlayer.isPlaying) {
-                    playButtonGlobal = playButton
+            override fun setPlayer(
+                position: Int,
+                progressBar: View,
+                playButton: ImageView,
+                container: View
+            ) {
+
+                if (previousPlayButton != null && previousPosition != position) {
+                    previousPlayButton?.setImageResource(R.drawable.baseline_play_circle_24)
+                    previousProgress?.isVisible = false
+                    previousContainer?.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
+                }
+                if (!mediaPlayer.isPlaying || previousPosition != position) {
+                    previousPosition = position
+                    previousProgress = progressBar
+                    previousContainer = container
                     Log.e("log", "пошла установка плеера")
                     progressBar.isVisible = true
                     playButton.setImageResource(R.drawable.baseline_stop_circle_24)
-                    setPlayerStation(playlist[position], progressBar)
+                    container.background =
+                        ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
+                    previousPlayButton = playButton
+//                    previousPosition = position
                 } else {
                     Log.e("log", "плеер не установился")
                     mediaPlayer.pause()
                     playButton.setImageResource(R.drawable.baseline_play_circle_24)
+                    previousPlayButton = null
+                    previousPosition = null
                 }
             }
         }

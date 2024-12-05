@@ -1,5 +1,6 @@
 package apc.appcradle.radioplayer
 
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,19 +32,25 @@ class MainActivity : AppCompatActivity() {
     private var previousProgress: View? = null
     private var previousContainer: View? = null
     private var previousPosition: Int? = null
+    private var isNight = 1
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+        prefs = getSharedPreferences("prefs", MODE_PRIVATE)
+        isNight = prefs.getInt("prefs", 2)
         binding = ActivityMainBinding.inflate(layoutInflater)
         bindingList = ListItemBinding.inflate(layoutInflater)
-
+        setTheme()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         recycler = binding.recycler
         adapter.setData(playlist)
         recycler.adapter = adapter
@@ -70,8 +79,8 @@ class MainActivity : AppCompatActivity() {
                     playButton.setImageResource(R.drawable.baseline_stop_circle_24)
                     container.background =
                         ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
+                    setPlayerStation(playlist[position], progressBar)
                     previousPlayButton = playButton
-//                    previousPosition = position
                 } else {
                     Log.e("log", "плеер не установился")
                     mediaPlayer.pause()
@@ -79,6 +88,39 @@ class MainActivity : AppCompatActivity() {
                     previousPlayButton = null
                     previousPosition = null
                 }
+            }
+        }
+        binding.imageView.setOnClickListener {
+            changeNightMode()
+        }
+    }
+
+    private fun setTheme() {
+        when (isNight) {
+            2 -> {
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.imageView.setImageResource(R.drawable.sun)
+            }
+
+            1 -> {
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.imageView.setImageResource(R.drawable.nightmode)
+            }
+        }
+    }
+
+    private fun changeNightMode() {
+        when (isNight) {
+            2 -> {
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                binding.imageView.setImageResource(R.drawable.sun)
+                prefs.edit().putInt("prefs", 1).apply()
+            }
+
+            1 -> {
+                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                binding.imageView.setImageResource(R.drawable.sun)
+                prefs.edit().putInt("prefs", 2).apply()
             }
         }
     }

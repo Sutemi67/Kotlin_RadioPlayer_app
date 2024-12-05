@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="warning_line">#FFFFFFFF</color>
+    <color name="night_icon">#A8F4BA40</color>
 </resources>

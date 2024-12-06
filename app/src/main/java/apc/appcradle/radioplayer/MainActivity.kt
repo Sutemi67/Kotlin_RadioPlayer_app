@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     playButton.setImageResource(R.drawable.baseline_stop_circle_24)
                     container.background =
                         ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
+
                     setPlayerStation(playlist[position], progressBar)
                     previousPlayButton = playButton
                 } else {

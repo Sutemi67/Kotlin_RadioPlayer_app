@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -28,6 +29,7 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback()) {
     var setPlayer: SetPlayerInterface? = null
+    private var playingPosition: Int? = null
 
     private val difUtil = RadioDiffUtilCallback()
     private val asyncListDiffer = AsyncListDiffer(this, difUtil)
@@ -49,10 +51,33 @@ class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback
     ) {
         val currentList = asyncListDiffer.currentList
         holder.bind(currentList[position])
+
+        if (playingPosition == position) {
+            holder.getPlayButton().setImageResource(R.drawable.baseline_stop_circle_24)
+            holder.getContainer().background =
+                ContextCompat.getDrawable(holder.itemView.context, R.drawable.plaing_shape)
+        } else {
+            holder.getPlayButton().setImageResource(R.drawable.baseline_play_circle_24)
+            holder.getContainer().background =
+                ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
+        }
+
         holder.itemView.setOnClickListener {
             val progressBar = holder.getProgressBar()
             val stationButton = holder.getPlayButton()
             val container = holder.getContainer()
+
+            if (playingPosition == position) {
+                playingPosition = null
+                notifyItemChanged(position)
+            } else{
+//            if (playingPosition != position) {
+                val previousPosition = playingPosition
+                playingPosition = position
+                notifyItemChanged(previousPosition ?: -1)
+                notifyItemChanged(position)
+//                setPlayer?.setPlayer(position, progressBar, stationButton, container)
+            }
             setPlayer?.setPlayer(position, progressBar, stationButton, container)
         }
     }

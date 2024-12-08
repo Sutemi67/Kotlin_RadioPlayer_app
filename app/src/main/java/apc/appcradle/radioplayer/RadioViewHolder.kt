@@ -18,7 +18,7 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val progressBar: View = itemView.findViewById(R.id.progress)
     private val container: View = itemView.findViewById(R.id.main_container)
 
-    fun bind(model: Station) {
+    fun bind(model: Station, position: Int) {
         stationName.text = model.name
     }
 
@@ -50,7 +50,7 @@ class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback
         position: Int
     ) {
         val currentList = asyncListDiffer.currentList
-        holder.bind(currentList[position])
+        holder.bind(currentList[position], position)
 
         if (playingPosition == position) {
             holder.getPlayButton().setImageResource(R.drawable.baseline_stop_circle_24)
@@ -70,14 +70,13 @@ class RadioAdapter : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback
             if (playingPosition == position) {
                 playingPosition = null
                 notifyItemChanged(position)
-            } else{
-//            if (playingPosition != position) {
+            } else {
                 val previousPosition = playingPosition
                 playingPosition = position
                 notifyItemChanged(previousPosition ?: -1)
                 notifyItemChanged(position)
-//                setPlayer?.setPlayer(position, progressBar, stationButton, container)
             }
+
             setPlayer?.setPlayer(position, progressBar, stationButton, container)
         }
     }

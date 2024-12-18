@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -23,7 +21,6 @@ import apc.appcradle.radioplayer.databinding.ListItemBinding
 import apc.appcradle.radioplayer.domain.SetPlayerInterface
 import apc.appcradle.radioplayer.domain.models.Station
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,10 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val mediaPlayer = MediaPlayer()
     private val adapter = RadioAdapter()
     private lateinit var recycler: RecyclerView
-
-    private var previousPlayButton: ImageView? = null
-    private var previousProgress: View? = null
-    private var previousContainer: View? = null
+    private var alreadyClicked = false
     private var previousPosition: Int? = null
     private var isNight = 1
     private lateinit var prefs: SharedPreferences
@@ -69,40 +63,50 @@ class MainActivity : AppCompatActivity() {
                 playButton: ImageView,
                 container: View
             ) {
-
-                if (previousPlayButton != null && previousPosition != position) {
-                    previousPlayButton?.setImageResource(R.drawable.baseline_play_circle_24)
-                    previousProgress?.isVisible = false
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
-                }
-                if (!mediaPlayer.isPlaying || previousPosition != position) {
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
+                if (previousPosition != position) {
                     previousPosition = position
-                    previousProgress = progressBar
-                    previousContainer = container
-                    Log.e("log", "пошла установка плеера")
-                    progressBar.isVisible = true
-                    playButton.setImageResource(R.drawable.baseline_stop_circle_24)
-                    container.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
-
+                    alreadyClicked = true
+                    Log.d("log", "пошла установка плеера")
                     setPlayerStation(vm.getPlaylist()[position], progressBar)
-                    previousPlayButton = playButton
                 } else {
-                    Log.e("log", "плеер не установился")
-                    mediaPlayer.pause()
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
-                    playButton.setImageResource(R.drawable.baseline_play_circle_24)
-                    previousPlayButton = null
-                    previousPosition = null
+                    if (!mediaPlayer.isPlaying && !alreadyClicked) {
+                        Log.d("log", "пошла установка плеера")
+                        alreadyClicked = true
+                        setPlayerStation(vm.getPlaylist()[position], progressBar)
+                    } else {
+                        alreadyClicked = false
+                        Log.i("log", "плеер остановлен")
+                        mediaPlayer.reset()
+                    }
                 }
             }
         }
+
         binding.imageView.setOnClickListener {
             changeNightMode()
+        }
+    }
+
+    private fun setPlayerStation(station: Station, progressBar: View) {
+        mediaPlayer.reset()
+        mediaPlayer.apply {
+            setDataSource(station.url)
+            prepareAsync()
+            setOnPreparedListener { mediaPlayer ->
+                Log.d("log", "плеер готов")
+                onPlayButtonClick()
+                progressBar.isVisible = false
+            }
+        }
+    }
+
+    private fun onPlayButtonClick() {
+        if (!mediaPlayer.isPlaying) {
+            mediaPlayer.start()
+            Log.i("log", "плеер стартанул")
+        } else {
+            mediaPlayer.reset()
+            Log.i("log", "остановились")
         }
     }
 
@@ -133,39 +137,6 @@ class MainActivity : AppCompatActivity() {
                 binding.imageView.setImageResource(R.drawable.sun)
                 prefs.edit().putInt("prefs", 2).apply()
             }
-        }
-    }
-
-    private fun setPlayerStation(station: Station, progressBar: View) {
-        mediaPlayer.reset()
-        try {
-            bindingList.progress.isVisible = true
-            mediaPlayer.apply {
-                setDataSource(station.url)
-                prepareAsync()
-            }
-        } catch (e: IOException) {
-            Toast.makeText(this, "Радио не работает", Toast.LENGTH_SHORT).show()
-            Log.e("log", "плеер не настроен")
-            progressBar.isVisible = false
-            e.printStackTrace()
-        }
-
-        mediaPlayer.setOnPreparedListener { mediaPlayer ->
-            Log.d("log", "плеер готов")
-            progressBar.isVisible = false
-            onPlayButtonClick()
-        }
-    }
-
-
-    private fun onPlayButtonClick() {
-        if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
-            Log.d("log", "плеер стартанул")
-        } else {
-            mediaPlayer.pause()
-            Log.d("log", "остановились")
         }
     }
 

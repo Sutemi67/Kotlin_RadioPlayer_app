@@ -20,6 +20,7 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun getProgressBar(): View = progressBar
     fun getPlayButton(): ImageView = stationButton
     fun getContainer(): View = container
+
 }
 
 

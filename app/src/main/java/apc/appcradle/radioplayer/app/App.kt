@@ -1,4 +1,4 @@
-package apc.appcradle.radioplayer
+package apc.appcradle.radioplayer.app
 
 import android.app.Application
 

@@ -1,4 +1,4 @@
-package apc.appcradle.radioplayer
+package apc.appcradle.radioplayer.domain
 
 import android.view.View
 import android.widget.ImageView

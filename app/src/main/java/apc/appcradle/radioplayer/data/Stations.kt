@@ -1,4 +1,4 @@
-package apc.appcradle.radioplayer
+package apc.appcradle.radioplayer.data
 
 data class Station(
     val name: String,

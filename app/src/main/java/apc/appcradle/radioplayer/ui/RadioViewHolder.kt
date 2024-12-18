@@ -1,4 +1,4 @@
-package apc.appcradle.radioplayer
+package apc.appcradle.radioplayer.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import apc.appcradle.radioplayer.R
+import apc.appcradle.radioplayer.data.Station
+import apc.appcradle.radioplayer.data.playlist
+import apc.appcradle.radioplayer.domain.SetPlayerInterface
 
 class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

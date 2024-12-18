@@ -1,4 +1,4 @@
-package apc.appcradle.radioplayer
+package apc.appcradle.radioplayer.ui
 
 import android.content.SharedPreferences
 import android.media.MediaPlayer
@@ -17,6 +17,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import apc.appcradle.radioplayer.R
+import apc.appcradle.radioplayer.domain.SetPlayerInterface
+import apc.appcradle.radioplayer.data.Station
+import apc.appcradle.radioplayer.data.playlist
 import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
 import java.io.IOException

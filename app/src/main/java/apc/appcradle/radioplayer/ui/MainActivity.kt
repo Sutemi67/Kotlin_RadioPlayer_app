@@ -18,11 +18,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import apc.appcradle.radioplayer.R
-import apc.appcradle.radioplayer.domain.SetPlayerInterface
-import apc.appcradle.radioplayer.data.Station
-import apc.appcradle.radioplayer.data.playlist
 import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
+import apc.appcradle.radioplayer.domain.SetPlayerInterface
+import apc.appcradle.radioplayer.domain.models.Station
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private var previousPosition: Int? = null
     private var isNight = 1
     private lateinit var prefs: SharedPreferences
+
+    private val vm by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         recycler = binding.recycler
-        adapter.setData(playlist)
+        adapter.setData(vm.getPlaylist())
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this)
 
@@ -86,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                     container.background =
                         ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
 
-                    setPlayerStation(playlist[position], progressBar)
+                    setPlayerStation(vm.getPlaylist()[position], progressBar)
                     previousPlayButton = playButton
                 } else {
                     Log.e("log", "плеер не установился")
@@ -165,7 +167,6 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer.pause()
             Log.d("log", "остановились")
         }
-
     }
 
     override fun onDestroy() {

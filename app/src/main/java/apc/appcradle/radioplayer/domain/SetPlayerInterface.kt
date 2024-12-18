@@ -1,8 +1,7 @@
 package apc.appcradle.radioplayer.domain
 
-import android.view.View
-import android.widget.ImageView
+import apc.appcradle.radioplayer.ui.RadioViewHolder
 
 interface SetPlayerInterface {
-    fun setPlayer(position: Int, progressBar: View, stationButton: ImageView, container: View)
+    fun setPlayer(position: Int, progressBar: RadioViewHolder)
 }

@@ -4,12 +4,11 @@ import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var alreadyClicked = false
     private var previousPosition: Int? = null
     private var isNight = 1
+    private var previousHolder: RadioViewHolder? = null
     private lateinit var prefs: SharedPreferences
 
     private val vm by viewModel<MainViewModel>()
@@ -58,21 +58,22 @@ class MainActivity : AppCompatActivity() {
 
         adapter.setPlayer = object : SetPlayerInterface {
             override fun setPlayer(
-                position: Int,
-                progressBar: View,
-                playButton: ImageView,
-                container: View
+                position: Int, holder: RadioViewHolder
             ) {
+                setDefaultHolder(holder)
+
                 if (previousPosition != position) {
+                    setDefaultHolder(previousHolder)
                     previousPosition = position
                     alreadyClicked = true
+                    previousHolder = holder
                     Log.d("log", "пошла установка плеера")
-                    setPlayerStation(vm.getPlaylist()[position], progressBar)
+                    setPlayerStation(vm.getPlaylist()[position], holder)
                 } else {
                     if (!mediaPlayer.isPlaying && !alreadyClicked) {
                         Log.d("log", "пошла установка плеера")
                         alreadyClicked = true
-                        setPlayerStation(vm.getPlaylist()[position], progressBar)
+                        setPlayerStation(vm.getPlaylist()[position], holder)
                     } else {
                         alreadyClicked = false
                         Log.i("log", "плеер остановлен")
@@ -87,27 +88,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setPlayerStation(station: Station, progressBar: View) {
+    private fun setPlayerStation(station: Station, holder: RadioViewHolder) {
         mediaPlayer.reset()
+        setPlayingHolder(holder)
         mediaPlayer.apply {
             setDataSource(station.url)
             prepareAsync()
             setOnPreparedListener { mediaPlayer ->
                 Log.d("log", "плеер готов")
-                onPlayButtonClick()
-                progressBar.isVisible = false
+                mediaPlayer.start()
+                holder.getProgressBar().isVisible = false
             }
         }
     }
 
-    private fun onPlayButtonClick() {
-        if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
-            Log.i("log", "плеер стартанул")
-        } else {
-            mediaPlayer.reset()
-            Log.i("log", "остановились")
-        }
+    fun setDefaultHolder(holder: RadioViewHolder?) {
+        holder?.getPlayButton()?.setImageResource(R.drawable.baseline_play_circle_24)
+        holder?.getContainer()?.background =
+            ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
+        holder?.getProgressBar()?.isVisible = false
+
+    }
+
+    fun setPlayingHolder(holder: RadioViewHolder) {
+        holder.getPlayButton().setImageResource(R.drawable.baseline_stop_circle_24)
+        holder.getContainer().background =
+            ContextCompat.getDrawable(holder.itemView.context, R.drawable.plaing_shape)
+        holder.getProgressBar().isVisible = true
     }
 
     private fun setTheme() {

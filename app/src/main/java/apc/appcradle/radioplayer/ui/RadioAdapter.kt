@@ -3,8 +3,6 @@ package apc.appcradle.radioplayer.ui
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ListAdapter
 import apc.appcradle.radioplayer.R
@@ -33,46 +31,31 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
         holder: RadioViewHolder,
         position: Int
     ) {
-        val progressBar = holder.getProgressBar()
-        val stationButton = holder.getPlayButton()
-        val container = holder.getContainer()
-
         holder.bind(asyncListDiffer.currentList[position])
 
-        setActiveStationUi(holder, position)
-
         holder.itemView.setOnClickListener {
-            determinePreviousPosition(holder, position)
-            Log.d("log", "нажал на установку плеера, ${progressBar.id}")
-            setPlayer?.setPlayer(holder.adapterPosition, progressBar, stationButton, container)
+            Log.d("log", "нажал на установку плеера")
+            setPlayer?.setPlayer(position, holder)
         }
     }
 
     override fun getItemCount(): Int = asyncListDiffer.currentList.size
 
-    private fun determinePreviousPosition(holder: RadioViewHolder, position: Int) {
-        if (playingPosition == position) {
-            playingPosition = null
-            notifyItemChanged(position)
-        } else {
-            val previousPosition = playingPosition
-            playingPosition = holder.adapterPosition
-            notifyItemChanged(previousPosition ?: -1)
-            notifyItemChanged(position)
-        }
-    }
-
-    private fun setActiveStationUi(holder: RadioViewHolder, position: Int) {
-        if (playingPosition == position) {
-            holder.getPlayButton().setImageResource(R.drawable.baseline_stop_circle_24)
-            holder.getContainer().background =
-                ContextCompat.getDrawable(holder.itemView.context, R.drawable.plaing_shape)
-            holder.getProgressBar().isVisible = true
-        } else {
-            holder.getPlayButton().setImageResource(R.drawable.baseline_play_circle_24)
-            holder.getContainer().background =
-                ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
-            holder.getProgressBar().isVisible = false
-        }
-    }
+//    private fun setActiveStationUi(holder: RadioViewHolder, position: Int) {
+//        Log.e("log", "Обновление интерфейса")
+//        if (playingPosition != position) {
+////            notifyItemChanged(playingPosition ?: -1)
+//            holder.getPlayButton().setImageResource(R.drawable.baseline_stop_circle_24)
+//            holder.getContainer().background =
+//                ContextCompat.getDrawable(holder.itemView.context, R.drawable.plaing_shape)
+//            holder.getProgressBar().isVisible = true
+//            playingPosition = position
+//        } else {
+//            holder.getPlayButton().setImageResource(R.drawable.baseline_play_circle_24)
+//            holder.getContainer().background =
+//                ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
+//            holder.getProgressBar().isVisible = false
+//            playingPosition = null
+//        }
+//    }
 }

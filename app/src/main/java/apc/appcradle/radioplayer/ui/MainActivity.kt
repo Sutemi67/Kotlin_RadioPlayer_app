@@ -4,26 +4,20 @@ import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import apc.appcradle.radioplayer.R
-import apc.appcradle.radioplayer.domain.SetPlayerInterface
-import apc.appcradle.radioplayer.data.Station
-import apc.appcradle.radioplayer.data.playlist
 import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
-import java.io.IOException
+import apc.appcradle.radioplayer.domain.SetPlayerInterface
+import apc.appcradle.radioplayer.domain.models.Station
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -31,13 +25,12 @@ class MainActivity : AppCompatActivity() {
     private val mediaPlayer = MediaPlayer()
     private val adapter = RadioAdapter()
     private lateinit var recycler: RecyclerView
-
-    private var previousPlayButton: ImageView? = null
-    private var previousProgress: View? = null
-    private var previousContainer: View? = null
+    private var alreadyClicked = false
     private var previousPosition: Int? = null
     private var isNight = 1
     private lateinit var prefs: SharedPreferences
+
+    private val vm by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,51 +49,48 @@ class MainActivity : AppCompatActivity() {
         }
 
         recycler = binding.recycler
-        adapter.setData(playlist)
+        adapter.setData(vm.getPlaylist())
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this)
 
         adapter.setPlayer = object : SetPlayerInterface {
             override fun setPlayer(
                 position: Int,
-                progressBar: View,
-                playButton: ImageView,
-                container: View
+                holder: RadioViewHolder
             ) {
-
-                if (previousPlayButton != null && previousPosition != position) {
-                    previousPlayButton?.setImageResource(R.drawable.baseline_play_circle_24)
-                    previousProgress?.isVisible = false
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
-                }
-                if (!mediaPlayer.isPlaying || previousPosition != position) {
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
+                if (previousPosition != position) {
                     previousPosition = position
-                    previousProgress = progressBar
-                    previousContainer = container
-                    Log.e("log", "пошла установка плеера")
-                    progressBar.isVisible = true
-                    playButton.setImageResource(R.drawable.baseline_stop_circle_24)
-                    container.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.plaing_shape)
-
-                    setPlayerStation(playlist[position], progressBar)
-                    previousPlayButton = playButton
+                    alreadyClicked = true
+                    Log.d("log", "пошла установка плеера")
+                    setPlayerStation(vm.getPlaylist()[position])
                 } else {
-                    Log.e("log", "плеер не установился")
-                    mediaPlayer.pause()
-                    previousContainer?.background =
-                        ContextCompat.getDrawable(this@MainActivity, R.drawable.normal_shape)
-                    playButton.setImageResource(R.drawable.baseline_play_circle_24)
-                    previousPlayButton = null
-                    previousPosition = null
+                    if (!mediaPlayer.isPlaying && !alreadyClicked) {
+                        Log.d("log", "пошла установка плеера")
+                        alreadyClicked = true
+                        setPlayerStation(vm.getPlaylist()[position])
+                    } else {
+                        alreadyClicked = false
+                        Log.i("log", "плеер остановлен")
+                        mediaPlayer.reset()
+                    }
                 }
             }
         }
+
         binding.imageView.setOnClickListener {
             changeNightMode()
+        }
+    }
+
+    private fun setPlayerStation(station: Station) {
+        mediaPlayer.reset()
+        mediaPlayer.apply {
+            setDataSource(station.url)
+            prepareAsync()
+            setOnPreparedListener { mediaPlayer ->
+                Log.d("log", "плеер готов")
+                mediaPlayer.start()
+            }
         }
     }
 
@@ -132,40 +122,6 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putInt("prefs", 2).apply()
             }
         }
-    }
-
-    private fun setPlayerStation(station: Station, progressBar: View) {
-        mediaPlayer.reset()
-        try {
-            bindingList.progress.isVisible = true
-            mediaPlayer.apply {
-                setDataSource(station.url)
-                prepareAsync()
-            }
-        } catch (e: IOException) {
-            Toast.makeText(this, "Радио не работает", Toast.LENGTH_SHORT).show()
-            Log.e("log", "плеер не настроен")
-            progressBar.isVisible = false
-            e.printStackTrace()
-        }
-
-        mediaPlayer.setOnPreparedListener { mediaPlayer ->
-            Log.d("log", "плеер готов")
-            progressBar.isVisible = false
-            onPlayButtonClick()
-        }
-    }
-
-
-    private fun onPlayButtonClick() {
-        if (!mediaPlayer.isPlaying) {
-            mediaPlayer.start()
-            Log.d("log", "плеер стартанул")
-        } else {
-            mediaPlayer.pause()
-            Log.d("log", "остановились")
-        }
-
     }
 
     override fun onDestroy() {

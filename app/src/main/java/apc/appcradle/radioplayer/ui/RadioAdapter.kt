@@ -35,15 +35,12 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
             asyncListDiffer.currentList[position],
             previousPosition == position
         )
-        Log.d("log", "отрисовка позиции $position")
-
         holder.itemView.setOnClickListener {
             setPlayer?.setPlayer(position, holder)
             notifyItemChanged(position)
-            Log.i("log", "перерисовываю позицию $position")
             notifyItemChanged(previousPosition)
-            Log.i("log", "перерисовываю позицию $previousPosition")
-            previousPosition = holder.adapterPosition
+            previousPosition = holder.getAbsoluteAdapterPosition()
+            Log.i("log", "после клика - предыдущая $previousPosition, эта $position")
         }
     }
 

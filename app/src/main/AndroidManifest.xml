@@ -29,8 +29,7 @@
         <service
             android:name=".ui.MediaService"
             android:exported="true"
-            android:foregroundServiceType="mediaPlayback"
-            tools:ignore="ForegroundServicePermission">
+            android:foregroundServiceType="mediaPlayback">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>

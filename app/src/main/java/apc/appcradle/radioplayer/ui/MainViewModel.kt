@@ -11,5 +11,4 @@ class MainViewModel(
     fun getPlaylist(): List<Station> {
         return repository.getPlaylist()
     }
-
 }

@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingList: ListItemBinding
 
-    //    private val mediaPlayer = MediaPlayer()
     private val adapter = RadioAdapter()
     private lateinit var recycler: RecyclerView
     private var alreadyClicked = false
@@ -54,43 +53,34 @@ class MainActivity : AppCompatActivity() {
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(this)
 
-//        binding.buttonStart.setOnClickListener {
-//            val intent = Intent(this, MediaService::class.java)
-//            intent.putExtra("path", "https://pub0301.101.ru:8443/stream/air/mp3/256/219")
-//            startService(intent)
-//        }
-
         adapter.setPlayer = object : SetPlayerInterface {
             override fun setPlayer(
                 position: Int,
-                holder: RadioViewHolder
+                holder: RadioViewHolder,
+                onSet: (Boolean) -> Unit
             ) {
                 if (previousPosition != position) {
                     previousPosition = position
                     alreadyClicked = true
-//                    Log.d("log", "пошла установка плеера")
-//                    setPlayerStation(vm.getPlaylist()[position])
                     val intent = Intent(this@MainActivity, MediaService::class.java)
                     stopService(intent)
                     intent.putExtra("path", vm.getPlaylist()[position].url)
                     ContextCompat.startForegroundService(this@MainActivity, intent)
-//                    startService(intent)
-
+                    onSet(true)
                 } else {
-//                    if (!mediaPlayer.isPlaying && !alreadyClicked) {
                     if (!alreadyClicked) {
                         Log.d("log", "пошла установка плеера")
                         alreadyClicked = true
-//                        setPlayerStation(vm.getPlaylist()[position])
                         val intent = Intent(this@MainActivity, MediaService::class.java)
                         intent.putExtra("path", vm.getPlaylist()[position].url)
                         startService(intent)
+                        onSet(true)
                     } else {
                         alreadyClicked = false
                         Log.i("log", "плеер остановлен")
-//                        mediaPlayer.reset()
                         val intent = Intent(this@MainActivity, MediaService::class.java)
                         stopService(intent)
+                        onSet(false)
                     }
                 }
             }
@@ -100,18 +90,6 @@ class MainActivity : AppCompatActivity() {
             changeNightMode()
         }
     }
-
-//    private fun setPlayerStation(station: Station) {
-//        mediaPlayer.reset()
-//        mediaPlayer.apply {
-//            setDataSource(station.url)
-//            prepareAsync()
-//            setOnPreparedListener { mediaPlayer ->
-//                Log.d("log", "плеер готов")
-//                mediaPlayer.start()
-//            }
-//        }
-//    }
 
     private fun setTheme() {
         when (isNight) {
@@ -143,8 +121,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        mediaPlayer.release()
-    }
 }

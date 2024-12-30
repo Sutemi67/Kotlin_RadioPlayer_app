@@ -17,6 +17,7 @@ import apc.appcradle.radioplayer.R
 import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
 import apc.appcradle.radioplayer.domain.SetPlayerInterface
+import com.bumptech.glide.Glide
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         binding.imageView.setOnClickListener {
             changeNightMode()
         }
+
     }
 
     private fun setTheme() {

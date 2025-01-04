@@ -12,19 +12,10 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Привет!\nСейчас радиостанции могут долго грузиться, но не больше минуты.\nПриятного пользования, отзывы можно в группу."
-        android:textAlignment="center"
+        android:fontFamily="@font/bold"
+        android:text="Привет!\n\nСейчас радиостанции могут долго грузиться, но не больше минуты.\n\nПриятного пользования, отзывы можно в группу."
+        android:textAlignment="textStart"
         app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/gif_place"
-        android:layout_width="137dp"
-        android:layout_height="135dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="232dp"
-        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

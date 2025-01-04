@@ -13,6 +13,7 @@
         android:layout_marginStart="28dp"
         android:text="Station name"
         android:textSize="20sp"
+        android:fontFamily="@font/medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

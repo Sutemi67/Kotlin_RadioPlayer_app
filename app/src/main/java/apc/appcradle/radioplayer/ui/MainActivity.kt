@@ -2,9 +2,11 @@ package apc.appcradle.radioplayer.ui
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
@@ -55,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
 
         adapter.setPlayer = object : SetPlayerInterface {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun setPlayer(
                 position: Int,
                 holder: RadioViewHolder,
@@ -66,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, MediaService::class.java)
                     stopService(intent)
                     intent.putExtra("path", vm.getPlaylist()[position].url)
-                    ContextCompat.startForegroundService(this@MainActivity, intent)
+                    applicationContext.startForegroundService(intent)
                     onSet(true)
                 } else {
                     if (!alreadyClicked) {
@@ -74,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                         alreadyClicked = true
                         val intent = Intent(this@MainActivity, MediaService::class.java)
                         intent.putExtra("path", vm.getPlaylist()[position].url)
-                        startService(intent)
+                        applicationContext.startForegroundService(intent)
                         onSet(true)
                     } else {
                         alreadyClicked = false

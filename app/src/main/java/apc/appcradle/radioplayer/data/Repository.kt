@@ -3,11 +3,11 @@ package apc.appcradle.radioplayer.data
 import apc.appcradle.radioplayer.domain.RepositoryInterface
 import apc.appcradle.radioplayer.domain.models.Station
 
-class Repository() : RepositoryInterface {
+class Repository : RepositoryInterface {
 
     override fun getPlaylist(): List<Station> = playlist
 
-    private val playlist = listOf<Station>(
+    private val playlist = listOf(
         Station("Like FM", "https://pub0301.101.ru:8443/stream/air/mp3/256/219"),
         Station("Relax Fm", "https://pub0301.101.ru:8443/stream/air/mp3/256/200"),
         Station("Радио Energy", "https://pub0301.101.ru:8443/stream/air/mp3/256/99"),

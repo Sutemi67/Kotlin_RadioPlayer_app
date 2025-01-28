@@ -3,6 +3,7 @@ package apc.appcradle.radioplayer.ui
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
@@ -31,12 +32,6 @@ class MediaService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-//        ServiceCompat.startForeground(
-//            this,
-//            SERVICE_NOTIFICATION_ID,
-//            createServiceNotification(),
-//            getForegroundServiceTypeConstant()
-//        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -56,14 +51,32 @@ class MediaService : Service() {
                     true
                 }
             }
-            ServiceCompat.startForeground(
-                this,
-                SERVICE_NOTIFICATION_ID,
-                createServiceNotification("Сейчас играет: $station"),
-                getForegroundServiceTypeConstant()
-            )
+//            ServiceCompat.startForeground(
+//                this,
+//                SERVICE_NOTIFICATION_ID,
+//                createServiceNotification("Сейчас играет: $station"),
+//                getForegroundServiceTypeConstant()
+//            )
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(
+                    SERVICE_NOTIFICATION_ID,
+                    createServiceNotification(station),
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+                )
+            } else {
+                startForeground(SERVICE_NOTIFICATION_ID, createServiceNotification(station))
+            }
         }
+        Log.d("MediaService", "Service is running in foreground: ${isForeground()}")
+
         return START_STICKY
+    }
+
+    private fun isForeground(): Boolean {
+        return (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
+            .activeNotifications
+            .any { it.id == SERVICE_NOTIFICATION_ID }
     }
 
     override fun onDestroy() {
@@ -89,12 +102,24 @@ class MediaService : Service() {
     }
 
     private fun createServiceNotification(station: String?): Notification {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle("Радио плеер")
-            .setContentText(station ?: "Неизвестная станция")
+            .setContentText(station)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
             .build()
     }
 

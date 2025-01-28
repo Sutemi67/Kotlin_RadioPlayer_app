@@ -5,18 +5,37 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import apc.appcradle.radioplayer.R
 
 class MediaService : Service() {
 
+    private companion object {
+        const val LOG_TAG = "MusicService"
+        const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
+        const val SERVICE_NOTIFICATION_ID = 100
+    }
+
     private var mediaPlayer: MediaPlayer? = null
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+        ServiceCompat.startForeground(
+            this,
+            SERVICE_NOTIFICATION_ID,
+            createServiceNotification(),
+            getForegroundServiceTypeConstant()
+        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -27,7 +46,7 @@ class MediaService : Service() {
                 setDataSource(path)
                 prepareAsync()
                 setOnPreparedListener {
-                    it.start()
+                    it?.start()
                 }
                 setOnErrorListener { _, what, extra ->
                     Log.e("MediaService", "Error occurred: what=$what, extra=$extra")
@@ -35,34 +54,49 @@ class MediaService : Service() {
                     true
                 }
             }
-            val notification = createNotification()
-            startForeground(1, notification)
         }
         return START_STICKY
     }
 
-
     override fun onDestroy() {
-        mediaPlayer?.stop()
-        mediaPlayer?.release()
         super.onDestroy()
+        mediaPlayer?.setOnPreparedListener(null)
+        mediaPlayer?.setOnCompletionListener(null)
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 
-    private fun createNotification(): Notification {
-        val channelId = "media_player_channel"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Media Player",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
+    private fun createNotificationChannel() {
+        // Создание каналов доступно только с Android 8.0
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return
         }
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            "Music Service",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Channel for playing music"
+        // Регистрируем канал уведомлений
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
 
-        return NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Media Player")
-            .setContentText("Playing media...")
-            .setSmallIcon(R.drawable.logo_main)
+    private fun createServiceNotification(): Notification {
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("Music foreground service")
+            .setContentText("Our service is working right now!")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
+    }
+
+    private fun getForegroundServiceTypeConstant(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            0
+        }
     }
 }

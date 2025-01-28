@@ -38,7 +38,7 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
             previousPosition == position
         )
         holder.itemView.setOnClickListener {
-            setPlayer?.setPlayer(position, holder) { ui(it, holder, position) }
+            setPlayer?.setPlayer(position) { ui(it, holder, position) }
         }
     }
 

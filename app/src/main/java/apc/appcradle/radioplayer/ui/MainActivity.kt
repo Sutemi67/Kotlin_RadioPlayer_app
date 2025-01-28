@@ -1,10 +1,14 @@
 package apc.appcradle.radioplayer.ui
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
@@ -18,19 +22,30 @@ import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
 import apc.appcradle.radioplayer.domain.SetPlayerInterface
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingList: ListItemBinding
+    private lateinit var recycler: RecyclerView
+    private lateinit var prefs: SharedPreferences
+    private lateinit var onSetGlobal: (Boolean) -> Unit
 
     private val adapter = RadioAdapter()
-    private lateinit var recycler: RecyclerView
     private var alreadyClicked = false
     private var previousPosition: Int? = null
     private var isNight = 1
-    private lateinit var prefs: SharedPreferences
-
+    private var positionGlobal = 0
     private val vm by viewModel<MainViewModel>()
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            startMusicService(positionGlobal, onSetGlobal)
+        } else {
+            Toast.makeText(this, "Can't start foreground service!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,38 +71,50 @@ class MainActivity : AppCompatActivity() {
         adapter.setPlayer = object : SetPlayerInterface {
             override fun setPlayer(
                 position: Int,
-                holder: RadioViewHolder,
                 onSet: (Boolean) -> Unit
             ) {
-                if (previousPosition != position) {
-                    previousPosition = position
-                    alreadyClicked = true
-                    val intent = Intent(this@MainActivity, MediaService::class.java)
-                    stopService(intent)
-                    intent.putExtra("path", vm.getPlaylist()[position].url)
-                    ContextCompat.startForegroundService(this@MainActivity, intent)
-                    onSet(true)
+                positionGlobal = position
+                onSetGlobal = onSet
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPermissionLauncher.launch(POST_NOTIFICATIONS)
                 } else {
-                    if (!alreadyClicked) {
-                        Log.d("log", "пошла установка плеера")
-                        alreadyClicked = true
-                        val intent = Intent(this@MainActivity, MediaService::class.java)
-                        intent.putExtra("path", vm.getPlaylist()[position].url)
-                        startService(intent)
-                        onSet(true)
-                    } else {
-                        alreadyClicked = false
-                        Log.i("log", "плеер остановлен")
-                        val intent = Intent(this@MainActivity, MediaService::class.java)
-                        stopService(intent)
-                        onSet(false)
-                    }
+                    startMusicService(position, onSet)
                 }
             }
         }
 
         binding.imageView.setOnClickListener {
             changeNightMode()
+        }
+    }
+
+    private fun startMusicService(
+        position: Int,
+        onSet: (Boolean) -> Unit
+    ) {
+        if (previousPosition != position) {
+            previousPosition = position
+            alreadyClicked = true
+            val intent = Intent(this@MainActivity, MediaService::class.java)
+            stopService(intent)
+            intent.putExtra("path", vm.getPlaylist()[position].url)
+            ContextCompat.startForegroundService(this@MainActivity, intent)
+            onSet(true)
+        } else {
+            if (!alreadyClicked) {
+                Log.d("log", "пошла установка плеера")
+                alreadyClicked = true
+                val intent = Intent(this@MainActivity, MediaService::class.java)
+                intent.putExtra("path", vm.getPlaylist()[position].url)
+                ContextCompat.startForegroundService(this@MainActivity, intent)
+                onSet(true)
+            } else {
+                alreadyClicked = false
+                Log.i("log", "плеер остановлен")
+                val intent = Intent(this@MainActivity, MediaService::class.java)
+                stopService(intent)
+                onSet(false)
+            }
         }
     }
 

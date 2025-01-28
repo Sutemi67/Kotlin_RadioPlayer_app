@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, MediaService::class.java)
             stopService(intent)
             intent.putExtra("path", vm.getPlaylist()[position].url)
+            intent.putExtra(STATION, vm.getPlaylist()[position].name)
             ContextCompat.startForegroundService(this@MainActivity, intent)
             onSet(true)
         } else {

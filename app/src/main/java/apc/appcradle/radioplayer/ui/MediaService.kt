@@ -14,10 +14,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import apc.appcradle.radioplayer.R
 
+const val STATION = "station"
+
 class MediaService : Service() {
 
     private companion object {
-        const val LOG_TAG = "MusicService"
         const val NOTIFICATION_CHANNEL_ID = "music_service_channel"
         const val SERVICE_NOTIFICATION_ID = 100
     }
@@ -30,16 +31,17 @@ class MediaService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        ServiceCompat.startForeground(
-            this,
-            SERVICE_NOTIFICATION_ID,
-            createServiceNotification(),
-            getForegroundServiceTypeConstant()
-        )
+//        ServiceCompat.startForeground(
+//            this,
+//            SERVICE_NOTIFICATION_ID,
+//            createServiceNotification(),
+//            getForegroundServiceTypeConstant()
+//        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val path = intent?.getStringExtra("path")
+        val station = intent?.getStringExtra(STATION)
         if (path != null) {
             mediaPlayer?.release()
             mediaPlayer = MediaPlayer().apply {
@@ -54,6 +56,12 @@ class MediaService : Service() {
                     true
                 }
             }
+            ServiceCompat.startForeground(
+                this,
+                SERVICE_NOTIFICATION_ID,
+                createServiceNotification("Сейчас играет: $station"),
+                getForegroundServiceTypeConstant()
+            )
         }
         return START_STICKY
     }
@@ -67,7 +75,6 @@ class MediaService : Service() {
     }
 
     private fun createNotificationChannel() {
-        // Создание каналов доступно только с Android 8.0
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
         }
@@ -77,15 +84,14 @@ class MediaService : Service() {
             NotificationManager.IMPORTANCE_DEFAULT
         )
         channel.description = "Channel for playing music"
-        // Регистрируем канал уведомлений
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun createServiceNotification(): Notification {
+    private fun createServiceNotification(station: String?): Notification {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Music foreground service")
-            .setContentText("Our service is working right now!")
+            .setContentTitle("Радио плеер")
+            .setContentText(station ?: "Неизвестная станция")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)

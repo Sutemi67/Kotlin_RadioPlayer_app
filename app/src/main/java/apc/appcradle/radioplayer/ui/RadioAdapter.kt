@@ -1,6 +1,5 @@
 package apc.appcradle.radioplayer.ui
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -9,11 +8,11 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import apc.appcradle.radioplayer.R
-import apc.appcradle.radioplayer.domain.SetPlayerInterface
+import apc.appcradle.radioplayer.domain.SetOnItemClickListener
 import apc.appcradle.radioplayer.domain.models.Station
 
 class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallback()) {
-    var setPlayer: SetPlayerInterface? = null
+    var setOnItemClickListener: SetOnItemClickListener? = null
     private var previousPosition: Int = RecyclerView.NO_POSITION
     private val difUtil = RadioDiffUtilCallback()
     private val asyncListDiffer = AsyncListDiffer(this, difUtil)
@@ -38,7 +37,7 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
             previousPosition == position
         )
         holder.itemView.setOnClickListener {
-            setPlayer?.setPlayer(position) { ui(it, holder, position) }
+            setOnItemClickListener?.setTrack(position) { ui(it, holder, position) }
         }
     }
 

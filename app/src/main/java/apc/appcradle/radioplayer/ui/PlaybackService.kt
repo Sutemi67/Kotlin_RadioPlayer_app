@@ -16,6 +16,7 @@ import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import apc.appcradle.radioplayer.constants.Enums
+import apc.appcradle.radioplayer.data.Repository
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -29,8 +30,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     private lateinit var player: Player
     private var mediaSession: MediaSession? = null
     private var currentSongPosition: Long = 0L
-    var seekForward = 5000
-    var seekBackward = 5000
     private var isPauseFromLoss = false
 
     // for audio focus request
@@ -52,16 +51,6 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
     }
 
     @SuppressLint("ObsoleteSdkInt")
-    private fun releaseAudioFocus() {
-        focusRequest?.let {
-            if (Build.VERSION.SDK_INT >= 26)
-                audioManager?.abandonAudioFocusRequest(it)
-            else
-                audioManager?.abandonAudioFocus(focusChangeListener)
-        }
-    }
-
-    @SuppressLint("ObsoleteSdkInt")
     private fun setupAndRequestAudioFocus() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
@@ -70,7 +59,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
                 .setOnAudioFocusChangeListener(focusChangeListener)
                 .build()
             focusRequest?.let {
-                audioFocusState = audioManager?.requestAudioFocus(it) ?: AudioManager.AUDIOFOCUS_REQUEST_FAILED
+                audioFocusState =
+                    audioManager?.requestAudioFocus(it) ?: AudioManager.AUDIOFOCUS_REQUEST_FAILED
             }
         } else {
             audioFocusState = audioManager?.requestAudioFocus(
@@ -107,7 +97,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             }
 
             AudioManager.AUDIOFOCUS_LOSS -> {
-                if (player.isPlaying){
+                if (player.isPlaying) {
                     player.pause()
                 }
             }
@@ -124,7 +114,7 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
             mediaSessionInstance = MediaSession.Builder(this, player).setCallback(this).build()
         }
         mediaSession = mediaSessionInstance
-        mediaSession?.setCustomLayout(notificationPlayerCustomCommandButtons )
+        mediaSession?.setCustomLayout(notificationPlayerCustomCommandButtons)
     }
 
     override fun onAddMediaItems(
@@ -132,7 +122,8 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         controller: MediaSession.ControllerInfo,
         mediaItems: MutableList<MediaItem>
     ): ListenableFuture<MutableList<MediaItem>> {
-        val updatedMediaItems = mediaItems.map { it.buildUpon().setUri(it.mediaId).build() }.toMutableList()
+        val updatedMediaItems =
+            mediaItems.map { it.buildUpon().setUri(it.mediaId).build() }.toMutableList()
         return Futures.immediateFuture(updatedMediaItems)
     }
 
@@ -176,20 +167,20 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         if (player.playWhenReady)
             setupAndRequestAudioFocus()
 
-        if (customCommand.customAction == Enums.Companion.NotificationPlayerCustomCommandButton.REWIND.customAction) {
-            if (currentSongPosition - seekBackward >= 0) {
-                session.player.seekTo(currentSongPosition - seekBackward)
-            } else {
-                session.player.seekTo(0)
-            }
-        }
-        if (customCommand.customAction == Enums.Companion.NotificationPlayerCustomCommandButton.FORWARD.customAction) {
-            if (currentSongPosition + seekForward <= session.player.duration) {
-                session.player.seekTo(currentSongPosition + seekForward)
-            } else {
-                session.player.seekTo(player.duration)
-            }
-        }
+//        if (customCommand.customAction == Enums.Companion.NotificationPlayerCustomCommandButton.REWIND.customAction) {
+////            if (currentSongPosition - seekBackward >= 0) {
+////                session.player.seekTo(currentSongPosition - seekBackward)
+////            } else {
+////                session.player.seekTo(0)
+////            }
+//        }
+//        if (customCommand.customAction == Enums.Companion.NotificationPlayerCustomCommandButton.FORWARD.customAction) {
+//            if (currentSongPosition + seekForward <= session.player.duration) {
+//                session.player.seekTo(currentSongPosition + seekForward)
+//            } else {
+//                session.player.seekTo(player.duration)
+//            }
+//        }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
     }
 
@@ -199,24 +190,12 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
 
     override fun onDestroy() {
         super.onDestroy()
-//        mediaSession?.run {
-//            release()
-//            player.release()
-//            mediaSession = null
-//            playerInstance = null
-//            mediaSessionInstance = null
-//        }
-//        releaseAudioFocus()
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-//        mediaSession?.player?.let { player ->
-//            if (player.playWhenReady) {
-//                player.pause()
-//            }
-//            stopSelf()
-//        }
-//        releaseAudioFocus()
+        mediaSession?.run {
+            release()
+            player.release()
+            mediaSession = null
+            playerInstance = null
+            mediaSessionInstance = null
+        }
     }
 }

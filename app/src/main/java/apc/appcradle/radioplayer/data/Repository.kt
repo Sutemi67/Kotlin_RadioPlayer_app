@@ -23,6 +23,7 @@ class Repository : RepositoryInterface {
         ),
         Station("Anime №1", "https://relay.radionami.com/any-anime.ru"),
         Station("Anime ANISON", "https://pool.anison.fm/AniSonFM(320)?nocache=0.18690744032766804"),
-        Station("DFM", "https://dfm.hostingradio.ru/dfm96.aacp")
+        Station("DFM", "https://dfm.hostingradio.ru/dfm96.aacp"),
+        Station("Radio Monte Carlo", "https://montecarlo.hostingradio.ru/montecarlo128.mp3")
     )
 }

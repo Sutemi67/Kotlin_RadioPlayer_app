@@ -4,11 +4,6 @@ import android.content.ComponentName
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -40,17 +35,9 @@ class MainActivity : AppCompatActivity() {
     private var isNight = 1
     private val vm by viewModel<MainViewModel>()
     private var pos = 0
-    private var previousPos = 0
 
-    var duration: Int = 0
     private lateinit var controller: MediaController
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
-
-    // Elapsed Time
-    private var stopwatchStartTime: Long = 0
-    private var elapsedTime: Long = 0
-    private var isStopwatchRunning: Boolean = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,19 +68,20 @@ class MainActivity : AppCompatActivity() {
 
         adapter.setOnItemClickListener = object : SetOnItemClickListener {
             override fun setTrack(position: Int, onSet: (Boolean) -> Unit) {
-
                 if (position != pos) {
-
                     this@MainActivity.pos = position
-                    log("нажатие на позицию $position")
-
                     controller.stop()
                     playMedia()
                     onSet(true)
 
                 } else {
-                    controller.stop()
-                    onSet(false)
+                    if (controller.isPlaying) {
+                        controller.stop()
+                        onSet(false)
+                    } else {
+                        playMedia()
+                        onSet(true)
+                    }
                 }
             }
         }
@@ -135,103 +123,30 @@ class MainActivity : AppCompatActivity() {
             override fun onPositionDiscontinuity(
                 oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int
             ) {
-                val currentposition = controller.currentPosition.toInt() / 1000
-//                binding.seekbar.progress = currentposition
-//                binding.time.text = getTimeString(currentposition)
-//                binding.duration.text = getTimeString(controller.duration.toInt() / 1000)
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
-//                        showBuffering()
-                        pauseStopwatch()
                     }
 
                     Player.STATE_READY -> {
-//                        hideBuffering()
-//                        updatePlayPauseButton(controller.playWhenReady)
-                        if (controller.playWhenReady) {
-                            startStopwatch()
-                        }
                     }
 
-                    Player.STATE_ENDED -> handlePlaybackEnded()
+                    Player.STATE_ENDED -> {
+
+                    }
+
                     Player.STATE_IDLE -> {
-                        pauseStopwatch()
                     }
                 }
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
 
-                if (isPlaying) {
-                    startStopwatch()
-                } else {
-                    pauseStopwatch()
-                }
-
-                duration = controller.duration.toInt() / 1000
-//                binding.seekbar.max = duration
-//                binding.time.text = "0:00"
-//                binding.duration.text = getTimeString(duration)
             }
+
         })
-
-        val handler = Handler(Looper.getMainLooper())
-        handler.post(object : Runnable {
-            override fun run() {
-                val currentposition = controller.currentPosition.toInt() / 1000
-//                binding.seekbar.progress = currentposition
-//                binding.time.text = getTimeString(currentposition)
-//                binding.duration.text = getTimeString(duration)
-                handler.postDelayed(this, 1000)
-            }
-        })
-    }
-
-    private fun startStopwatch() {
-        if (!isStopwatchRunning) {
-            stopwatchStartTime = SystemClock.elapsedRealtime() - elapsedTime
-            isStopwatchRunning = true
-        }
-    }
-
-    private fun pauseStopwatch() {
-        if (isStopwatchRunning) {
-            elapsedTime = SystemClock.elapsedRealtime() - stopwatchStartTime
-            isStopwatchRunning = false
-        }
-    }
-
-    private fun reportListenTime() {
-        if (isStopwatchRunning) {
-            elapsedTime = SystemClock.elapsedRealtime() - stopwatchStartTime
-        }
-        // Convert milliseconds to seconds
-        val listenedTimeInSeconds = elapsedTime / 1000
-
-        Toast.makeText(
-            this@MainActivity,
-            "Total listened time: $listenedTimeInSeconds seconds",
-            Toast.LENGTH_SHORT
-        ).show()
-        log("Total listened time: $listenedTimeInSeconds seconds")
-    }
-
-    private fun getTimeString(seconds: Int): String {
-        val mins = seconds / 60
-        val secs = seconds % 60
-        return String.format("%02d:%02d", mins, secs)
-    }
-
-    private fun log(message: String) {
-        Log.e("session2", message)
-    }
-
-    private fun handlePlaybackEnded() {
-        pauseStopwatch()
-        reportListenTime()
     }
 
     private fun setTheme() {

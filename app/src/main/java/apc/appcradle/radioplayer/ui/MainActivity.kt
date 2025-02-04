@@ -1,6 +1,7 @@
 package apc.appcradle.radioplayer.ui
 
 import android.content.ComponentName
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.imageView.setOnClickListener {
             changeNightMode()
+        }
+        binding.telegramIcon.setOnClickListener{
+            vm.openTelegram(this)
         }
 
         adapter.setOnItemClickListener = object : SetOnItemClickListener {

@@ -9,35 +9,45 @@
 
     <TextView
         android:id="@+id/warning_text"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Привет!\nСейчас радиостанции могут долго грузиться, но не больше минуты.\nПриятного пользования, отзывы можно в группу."
+        android:text="Привет!\nПриятного пользования приложением.\nОтзывы можно оставлять в нашей группе в телеграм."
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="28dp"
         android:src="@drawable/nightmode"
-        app:layout_constraintBottom_toBottomOf="@+id/warning_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/warning_text"
+        app:layout_constraintEnd_toStartOf="@+id/telegram_icon"
+        app:layout_constraintTop_toBottomOf="@+id/warning_text"
         app:tint="@color/night_icon" />
+
+    <ImageView
+        android:id="@+id/telegram_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="6dp"
+        android:alpha="0.9"
+        android:src="@drawable/ic_telegram"
+        app:layout_constraintEnd_toEndOf="@+id/warning_text"
+        app:layout_constraintTop_toBottomOf="@+id/warning_text" />
 
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@color/warning_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/warning_text" />
+        app:layout_constraintTop_toBottomOf="@id/telegram_icon" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -51,7 +61,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

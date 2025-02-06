@@ -1,10 +1,8 @@
 package apc.appcradle.radioplayer.ui
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.ListAdapter
@@ -19,8 +17,14 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
     private val difUtil = RadioDiffUtilCallback()
     private val asyncListDiffer = AsyncListDiffer(this, difUtil)
     private var gradient: GradientDrawable? = null
+    private var textColor: Int = 0
 
     fun setData(list: List<Station>) = asyncListDiffer.submitList(list)
+
+    fun updateColors(newTextColor: Int) {
+        textColor = newTextColor
+        notifyItemRangeChanged(0, itemCount)
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -39,16 +43,17 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
         holder.bind(
             asyncListDiffer.currentList[position],
             previousPosition == position,
-            gradient
+            gradient,
+            textColor
         )
 
         holder.itemView.setOnClickListener {
             setOnItemClickListener?.setTrack(position) {
                 gradient = it.gradient
+                textColor = it.textColor
                 ui(it, holder, position)
             }
         }
-
     }
 
     private fun ui(state: PlayerState, holder: RadioViewHolder, position: Int) {

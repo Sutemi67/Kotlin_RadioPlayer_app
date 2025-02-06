@@ -63,9 +63,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        selectorColor = vm.getSavedColor(SELECTOR_COLOR_TOKEN)
-        bgColor = vm.getSavedColor(BG_COLOR_TOKEN)
-        textColor = vm.getSavedColor(TEXT_COLOR_TOKEN)
+        selectorColor = selectorColor()
+        bgColor = bgColor()
+        textColor = textColor()
 
         setColors()
 
@@ -92,14 +92,14 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.pos = position
                     controller.stop()
                     playMedia()
-                    setSelectorColor(PlayerState.Playing(createGradient()))
+                    setSelectorColor(PlayerState.Playing(createGradient(), textColor))
                 } else {
                     if (controller.isPlaying) {
                         controller.stop()
-                        setSelectorColor(PlayerState.Default())
+                        setSelectorColor(PlayerState.Default(textColor))
                     } else {
                         playMedia()
-                        setSelectorColor(PlayerState.Playing(createGradient()))
+                        setSelectorColor(PlayerState.Playing(createGradient(), textColor))
                     }
                 }
             }
@@ -108,10 +108,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        selectorColor = vm.getSavedColor(SELECTOR_COLOR_TOKEN)
-        bgColor = vm.getSavedColor(BG_COLOR_TOKEN)
-        textColor = vm.getSavedColor(TEXT_COLOR_TOKEN)
+        selectorColor = selectorColor()
+        bgColor = bgColor()
+        textColor = textColor()
+        adapter.updateColors(textColor)
         setColors()
+    }
+
+    private fun bgColor(): Int {
+        val color = vm.getSavedColor(BG_COLOR_TOKEN)
+        return if (color == 0) Color.BLACK else color
+    }
+
+    private fun textColor(): Int {
+        val color = vm.getSavedColor((TEXT_COLOR_TOKEN))
+        return if (color == 0) Color.WHITE else color
+    }
+
+    private fun selectorColor(): Int {
+        val color = vm.getSavedColor((SELECTOR_COLOR_TOKEN))
+        return if (color == 0) Color.CYAN else color
     }
 
     private fun initializeMediaController() {

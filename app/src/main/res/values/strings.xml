@@ -4,5 +4,6 @@
     <string name="back_arrow_button">back navigation arrow</string>
     <string name="change_selector_color_text">Изменить цвет выделителя</string>
     <string name="change_bg_color_text">Изменить цвет фона</string>
+    <string name="change_font_color_text">Изменить цвет текста</string>
     <string name="clear_colors_button">Сбросить цвета</string>
 </resources>

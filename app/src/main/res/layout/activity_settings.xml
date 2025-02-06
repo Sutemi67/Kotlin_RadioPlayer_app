@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".ui.SettingsActivity">
 
     <ImageView
@@ -63,13 +64,47 @@
         app:layout_constraintEnd_toEndOf="@+id/selectorColorIcon"
         app:layout_constraintTop_toTopOf="@+id/bgColorText" />
 
+    <TextView
+        android:id="@+id/textColorText"
+        style="@style/regular_text"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="28dp"
+        android:gravity="center"
+        android:text="@string/change_font_color_text"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/backArrow"
+        app:layout_constraintTop_toBottomOf="@+id/bgColorText" />
+
+    <View
+        android:id="@+id/textColorIcon"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/textColorText"
+        app:layout_constraintEnd_toEndOf="@+id/selectorColorIcon"
+        app:layout_constraintTop_toTopOf="@+id/textColorText" />
+
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/clearButton"
+        style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="68dp"
+        android:backgroundTint="#233039"
         android:text="@string/clear_colors_button"
+        android:textAppearance="@style/regular_text"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:elevation="5dp"
+        app:icon="@drawable/baseline_clear_24"
+        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bgColorText" />
+        app:layout_constraintTop_toBottomOf="@+id/textColorText"
+        app:rippleColor="@color/white"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

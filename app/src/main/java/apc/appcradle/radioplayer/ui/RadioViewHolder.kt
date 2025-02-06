@@ -1,6 +1,7 @@
 package apc.appcradle.radioplayer.ui
 
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -16,13 +17,21 @@ class RadioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val progressBar: ProgressBar = itemView.findViewById(R.id.progress)
     val container: View = itemView.findViewById(R.id.main_container)
 
-
     fun bind(
         model: Station,
         isThisAPreviousPosition: Boolean,
-        color: GradientDrawable?
+        color: GradientDrawable?,
+        textColor: Int
     ) {
         stationName.text = model.name
+
+        if (textColor == 0) {
+            Log.i("color", "цвет строки нулевой")
+            return
+        } else {
+            stationName.setTextColor(textColor)
+            Log.i("color", "цвет строки $textColor")
+        }
 
         if (isThisAPreviousPosition) {
             stationButton.setImageResource(R.drawable.baseline_stop_circle_24)

@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun bgColor(): Int {
         val color = vm.getSavedColor(BG_COLOR_TOKEN)
-        return if (color == 0) Color.parseColor("#000000E4") else color
+        return if (color == 0) Color.parseColor("#E6000000") else color
     }
 
     private fun textColor(): Int {

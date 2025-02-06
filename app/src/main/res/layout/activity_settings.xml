@@ -17,17 +17,17 @@
         android:src="@drawable/baseline_arrow_back_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/warning_line" />
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/selectorColorText"
+        style="@style/regular_text"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginTop="44dp"
         android:gravity="center"
         android:text="@string/change_selector_color_text"
-        android:textColor="@color/warning_line"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/backArrow"
         app:layout_constraintTop_toBottomOf="@+id/backArrow" />
 
@@ -43,13 +43,14 @@
 
     <TextView
         android:id="@+id/bgColorText"
+        style="@style/regular_text"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginTop="25dp"
         android:gravity="center"
         android:text="@string/change_bg_color_text"
-        android:textColor="@color/warning_line"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="@+id/backArrow"
         app:layout_constraintTop_toBottomOf="@+id/selectorColorText" />
 
@@ -57,7 +58,6 @@
         android:id="@+id/bgColorIcon"
         android:layout_width="60dp"
         android:layout_height="30dp"
-        android:backgroundTintMode="multiply"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/bgColorText"
         app:layout_constraintEnd_toEndOf="@+id/selectorColorIcon"

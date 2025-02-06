@@ -3,12 +3,16 @@ package apc.appcradle.radioplayer.ui
 import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.media3.common.MediaItem
@@ -54,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         isNight = prefs.getInt("prefs", 2)
         binding = ActivityMainBinding.inflate(layoutInflater)
         bindingList = ListItemBinding.inflate(layoutInflater)
-        setTheme()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -75,9 +78,6 @@ class MainActivity : AppCompatActivity() {
 
         initializeMediaController()
 
-        binding.imageView.setOnClickListener {
-            changeNightMode()
-        }
         binding.telegramIcon.setOnClickListener {
             vm.openTelegram(this)
         }
@@ -94,14 +94,14 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.pos = position
                     controller.stop()
                     playMedia()
-                    setSelectorColor(PlayerState.Playing(selectorColor))
+                    setSelectorColor(PlayerState.Playing(createGradient()))
                 } else {
                     if (controller.isPlaying) {
                         controller.stop()
                         setSelectorColor(PlayerState.Default())
                     } else {
                         playMedia()
-                        setSelectorColor(PlayerState.Playing(selectorColor))
+                        setSelectorColor(PlayerState.Playing(createGradient()))
                     }
                 }
             }
@@ -113,9 +113,9 @@ class MainActivity : AppCompatActivity() {
         selectorColor = vm.getSavedColor(SELECTOR_COLOR_TOKEN)
         bgColor = vm.getSavedColor(BG_COLOR_TOKEN)
         textColor = vm.getSavedColor(TEXT_COLOR_TOKEN)
-
         setColors()
     }
+
     private fun initializeMediaController() {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -178,36 +178,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setTheme() {
-        when (isNight) {
-            2 -> {
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.imageView.setImageResource(R.drawable.sun)
-            }
-
-            1 -> {
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.imageView.setImageResource(R.drawable.nightmode)
-            }
-        }
-    }
-
-    private fun changeNightMode() {
-        when (isNight) {
-            2 -> {
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.imageView.setImageResource(R.drawable.sun)
-                prefs.edit().putInt("prefs", 1).apply()
-            }
-
-            1 -> {
-                setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.imageView.setImageResource(R.drawable.sun)
-                prefs.edit().putInt("prefs", 2).apply()
-            }
-        }
-    }
-
     override fun onDestroy() {
         mediaControllerFuture?.let {
             MediaController.releaseFuture(it)
@@ -219,5 +189,27 @@ class MainActivity : AppCompatActivity() {
     private fun setColors() {
         if (bgColor == 0) return else binding.main.setBackgroundColor(bgColor)
         if (textColor == 0) return else binding.warningText.setTextColor(textColor)
+    }
+
+    private fun createGradient(): GradientDrawable {
+        if (selectorColor == 0) {
+            return ContextCompat.getDrawable(
+                applicationContext,
+                R.drawable.playing_shape
+            ) as GradientDrawable
+        } else {
+            val grad = GradientDrawable().apply {
+                gradientType = GradientDrawable.LINEAR_GRADIENT
+                orientation = GradientDrawable.Orientation.LEFT_RIGHT
+                Log.i("colors", "дошли до создания градиента")
+                colors = intArrayOf(
+                    selectorColor,
+                    Color.TRANSPARENT
+                )
+                cornerRadius = 30f
+                setStroke(1, Color.WHITE)
+            }
+            return grad
+        }
     }
 }

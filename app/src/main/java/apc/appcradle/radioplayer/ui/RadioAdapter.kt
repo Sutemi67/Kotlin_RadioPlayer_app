@@ -1,5 +1,6 @@
 package apc.appcradle.radioplayer.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -16,6 +17,7 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
     private var previousPosition: Int = RecyclerView.NO_POSITION
     private val difUtil = RadioDiffUtilCallback()
     private val asyncListDiffer = AsyncListDiffer(this, difUtil)
+    private var color = 0
 
     fun setData(list: List<Station>) = asyncListDiffer.submitList(list)
 
@@ -32,31 +34,46 @@ class RadioAdapter() : ListAdapter<Station, RadioViewHolder>(RadioDiffUtilCallba
         holder: RadioViewHolder,
         position: Int
     ) {
+
         holder.bind(
             asyncListDiffer.currentList[position],
-            previousPosition == position
+            previousPosition == position,
+            color
         )
+
         holder.itemView.setOnClickListener {
-            setOnItemClickListener?.setTrack(position) { ui(it, holder, position) }
+            setOnItemClickListener?.setTrack(position) {
+                color = it.selectorColor
+                ui(it, holder, position)
+            }
         }
+
     }
 
-    private fun ui(state: Boolean, holder: RadioViewHolder, position: Int) {
-        if (state) {
-            holder.stationButton.setImageResource(R.drawable.baseline_stop_circle_24)
-            holder.container.background =
-                ContextCompat.getDrawable(holder.itemView.context, R.drawable.plaing_shape)
-            notifyItemChanged(position)
-            notifyItemChanged(previousPosition)
-            previousPosition = holder.getAbsoluteAdapterPosition()
-        } else {
-            holder.stationButton.setImageResource(R.drawable.baseline_play_circle_24)
-            holder.container.background =
-                ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
-            holder.progressBar.isVisible = false
-            notifyItemChanged(position)
-            notifyItemChanged(previousPosition)
-            previousPosition = RecyclerView.NO_POSITION
+    @SuppressLint("ResourceAsColor")
+    private fun ui(state: PlayerState, holder: RadioViewHolder, position: Int) {
+        when (state) {
+            is PlayerState.Default -> {
+                holder.stationButton.setImageResource(R.drawable.baseline_play_circle_24)
+                holder.container.background =
+                    ContextCompat.getDrawable(holder.itemView.context, R.drawable.normal_shape)
+                holder.progressBar.isVisible = false
+                notifyItemChanged(position)
+                notifyItemChanged(previousPosition)
+                previousPosition = RecyclerView.NO_POSITION
+            }
+
+            is PlayerState.Playing -> {
+                if (state.selectorColor == 0) {
+                    holder.container.setBackgroundColor(R.color.playing_shape)
+                } else {
+                    holder.container.setBackgroundColor(state.selectorColor)
+                }
+                holder.stationButton.setImageResource(R.drawable.baseline_stop_circle_24)
+                notifyItemChanged(position)
+                notifyItemChanged(previousPosition)
+                previousPosition = holder.getAbsoluteAdapterPosition()
+            }
         }
     }
 

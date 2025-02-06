@@ -19,6 +19,9 @@ import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import apc.appcradle.radioplayer.R
+import apc.appcradle.radioplayer.constants.BG_COLOR_TOKEN
+import apc.appcradle.radioplayer.constants.SELECTOR_COLOR_TOKEN
+import apc.appcradle.radioplayer.constants.TEXT_COLOR_TOKEN
 import apc.appcradle.radioplayer.databinding.ActivityMainBinding
 import apc.appcradle.radioplayer.databinding.ListItemBinding
 import apc.appcradle.radioplayer.domain.SetOnItemClickListener
@@ -40,9 +43,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var controller: MediaController
     private var mediaControllerFuture: ListenableFuture<MediaController>? = null
 
+    private var selectorColor = 0
+    private var bgColor = 0
+    private var textColor = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
         prefs = getSharedPreferences("prefs", MODE_PRIVATE)
         isNight = prefs.getInt("prefs", 2)
@@ -56,6 +62,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        selectorColor = vm.getSavedColor(SELECTOR_COLOR_TOKEN)
+        bgColor = vm.getSavedColor(BG_COLOR_TOKEN)
+        textColor = vm.getSavedColor(TEXT_COLOR_TOKEN)
+
+        setColors()
+
         recycler = binding.recycler
         adapter.setData(vm.getPlaylist())
         recycler.adapter = adapter
@@ -66,31 +78,44 @@ class MainActivity : AppCompatActivity() {
         binding.imageView.setOnClickListener {
             changeNightMode()
         }
-        binding.telegramIcon.setOnClickListener{
+        binding.telegramIcon.setOnClickListener {
             vm.openTelegram(this)
         }
-
+        binding.settings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
         adapter.setOnItemClickListener = object : SetOnItemClickListener {
-            override fun setTrack(position: Int, onSet: (Boolean) -> Unit) {
+            override fun setTrack(
+                position: Int,
+                setSelectorColor: (PlayerState) -> Unit
+            ) {
                 if (position != pos) {
                     this@MainActivity.pos = position
                     controller.stop()
                     playMedia()
-                    onSet(true)
-
+                    setSelectorColor(PlayerState.Playing(selectorColor))
                 } else {
                     if (controller.isPlaying) {
                         controller.stop()
-                        onSet(false)
+                        setSelectorColor(PlayerState.Default())
                     } else {
                         playMedia()
-                        onSet(true)
+                        setSelectorColor(PlayerState.Playing(selectorColor))
                     }
                 }
             }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        selectorColor = vm.getSavedColor(SELECTOR_COLOR_TOKEN)
+        bgColor = vm.getSavedColor(BG_COLOR_TOKEN)
+        textColor = vm.getSavedColor(TEXT_COLOR_TOKEN)
+
+        setColors()
+    }
     private fun initializeMediaController() {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -188,5 +213,11 @@ class MainActivity : AppCompatActivity() {
             MediaController.releaseFuture(it)
         }
         super.onDestroy()
+    }
+
+
+    private fun setColors() {
+        if (bgColor == 0) return else binding.main.setBackgroundColor(bgColor)
+        if (textColor == 0) return else binding.warningText.setTextColor(textColor)
     }
 }

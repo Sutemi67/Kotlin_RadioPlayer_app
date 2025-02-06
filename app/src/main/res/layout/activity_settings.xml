@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SettingsActivity">
+
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/back_arrow_button"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/warning_line" />
+
+    <TextView
+        android:id="@+id/selectorColorText"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="44dp"
+        android:gravity="center"
+        android:text="@string/change_selector_color_text"
+        android:textColor="@color/warning_line"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/backArrow"
+        app:layout_constraintTop_toBottomOf="@+id/backArrow" />
+
+    <View
+        android:id="@+id/selectorColorIcon"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/playing_shape"
+        app:layout_constraintBottom_toBottomOf="@+id/selectorColorText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/selectorColorText" />
+
+    <TextView
+        android:id="@+id/bgColorText"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:text="@string/change_bg_color_text"
+        android:textColor="@color/warning_line"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/backArrow"
+        app:layout_constraintTop_toBottomOf="@+id/selectorColorText" />
+
+    <View
+        android:id="@+id/bgColorIcon"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:backgroundTintMode="multiply"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/bgColorText"
+        app:layout_constraintEnd_toEndOf="@+id/selectorColorIcon"
+        app:layout_constraintTop_toTopOf="@+id/bgColorText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

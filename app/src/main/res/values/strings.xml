@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RadioPlayer</string>
     <string name="hello_text">Привет!\nПриятного пользования приложением.\nОтзывы можно оставлять в нашей группе в телеграм.</string>
+    <string name="back_arrow_button">back navigation arrow</string>
+    <string name="change_selector_color_text">Изменить цвет выделителя</string>
+    <string name="change_bg_color_text">Изменить цвет фона</string>
 </resources>

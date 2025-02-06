@@ -59,4 +59,9 @@ dependencies {
     implementation (libs.androidx.media3.ui)
     implementation (libs.androidx.media3.common)
     implementation (libs.androidx.media3.session)
+
+    //ColorPicker
+//    implementation (libs.colorpicker)
+    implementation (libs.colorpickerview)
+    implementation(libs.ambilwarna)
 }

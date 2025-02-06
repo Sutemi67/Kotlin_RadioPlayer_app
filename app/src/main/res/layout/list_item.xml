@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/radiostation_name"
+        style="@style/regular_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"

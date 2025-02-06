@@ -12,7 +12,7 @@ class Repository : RepositoryInterface {
         Station("Relax Fm", "https://pub0301.101.ru:8443/stream/air/mp3/256/200"),
         Station("Радио Energy", "https://pub0301.101.ru:8443/stream/air/mp3/256/99"),
         Station("Наше Радио", "https://nashe1.hostingradio.ru/nashe-256"),
-        Station("Наше Панки Хой!", "https://nashe1.hostingradio.ru/nashe-256"),
+        Station("Наше Панки Хой!", "https://nashe1.hostingradio.ru/nashepunks.mp3"),
         Station("Юмор FM", "https://pub0301.101.ru:8443/stream/air/mp3/256/102"),
         Station("Jazz", "https://srv01.gpmradio.ru/stream/pro/aac/64/85?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiI0ZjFlMjhjNzliMzY5MTM0OTk2ZGMyYWY2ZmY0NWUxOCIsIklQIjoiMjEyLjMuMTMwLjU0IiwiVUEiOiJNb3ppbGxhLzUuMCAoTWFjaW50b3NoOyBJbnRlbCBNYWMgT1MgWCAxMF8xNV83KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvMTMxLjAuMC4wIFNhZmFyaS81MzcuMzYiLCJSZWYiOiJodHRwczovLzEwMS5ydS8iLCJ1aWRfY2hhbm5lbCI6Ijg1IiwidHlwZV9jaGFubmVsIjoiY2hhbm5lbCIsInR5cGVEZXZpY2UiOiJQQyIsIkJyb3dzZXIiOiJDaHJvbWUiLCJCcm93c2VyVmVyc2lvbiI6IjEzMS4wLjAuMCIsIlN5c3RlbSI6Ik1hYyBPUyBYIFB1bWEiLCJleHAiOjE3MzUxODIzMjN9.4-wauch60w0_wiOQhsw9ALKsn-Uv9GE-Nx4EYCigAog"),
         Station("Blues", "https://srv11.gpmradio.ru:8443/stream/pro/aac/64/76?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiI0ZjFlMjhjNzliMzY5MTM0OTk2ZGMyYWY2ZmY0NWUxOCIsIklQIjoiMjEyLjMuMTMwLjU0IiwiVUEiOiJNb3ppbGxhLzUuMCAoTWFjaW50b3NoOyBJbnRlbCBNYWMgT1MgWCAxMF8xNV83KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvMTMxLjAuMC4wIFNhZmFyaS81MzcuMzYiLCJSZWYiOiJodHRwczovLzEwMS5ydS8iLCJ1aWRfY2hhbm5lbCI6Ijc2IiwidHlwZV9jaGFubmVsIjoiY2hhbm5lbCIsInR5cGVEZXZpY2UiOiJQQyIsIkJyb3dzZXIiOiJDaHJvbWUiLCJCcm93c2VyVmVyc2lvbiI6IjEzMS4wLjAuMCIsIlN5c3RlbSI6Ik1hYyBPUyBYIFB1bWEiLCJleHAiOjE3MzUxODIzNzd9.M_mwxs7puPumCxA28zGS2_tWN7FK581HhrXDekG8D68"),
@@ -24,6 +24,9 @@ class Repository : RepositoryInterface {
         Station("Anime №1", "https://relay.radionami.com/any-anime.ru"),
         Station("Anime ANISON", "https://pool.anison.fm/AniSonFM(320)?nocache=0.18690744032766804"),
         Station("DFM", "https://dfm.hostingradio.ru/dfm96.aacp"),
-        Station("Radio Monte Carlo", "https://montecarlo.hostingradio.ru/montecarlo128.mp3")
+        Station("Radio Monte Carlo", "https://montecarlo.hostingradio.ru/montecarlo128.mp3"),
+        Station("SOUNDPARK CLASSIC", "https://relay4.radiotoolkit.com/spclassic"),
+        Station("Deep ONE", "https://stream.deep1.ru/deep1mp3"),
+        Station("Lounge Radio", "https://nl1.streamhosting.ch/;")
     )
 }

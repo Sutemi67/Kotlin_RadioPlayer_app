@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RadioPlayer</string>
+    <string name="hello_text">Привет!\nПриятного пользования приложением.\nОтзывы можно оставлять в нашей группе в телеграм.</string>
 </resources>

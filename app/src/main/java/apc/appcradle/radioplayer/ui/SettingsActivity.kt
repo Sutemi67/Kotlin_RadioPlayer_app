@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import apc.appcradle.radioplayer.constants.BG_COLOR_TOKEN
 import apc.appcradle.radioplayer.constants.SELECTOR_COLOR_TOKEN
 import apc.appcradle.radioplayer.constants.TEXT_COLOR_TOKEN
+import apc.appcradle.radioplayer.R
 import apc.appcradle.radioplayer.databinding.ActivitySettingsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import yuku.ambilwarna.AmbilWarnaDialog
@@ -29,12 +30,7 @@ class SettingsActivity : AppCompatActivity() {
             insets
         }
 
-        binding.selectorColorIcon.background = createGradient(selectorColor())
-        binding.bgColorIcon.background = createGradient(bgColor())
-        binding.textColorIcon.background = createGradient(textColor())
-
-        binding.main.setBackgroundColor(bgColor())
-        binding.backArrow.background = createGradient(textColor())
+        setColors()
 
         binding.selectorColorIcon.setOnClickListener { view -> showColorPicker(view) }
         binding.bgColorIcon.setOnClickListener { view -> showColorPicker(view) }
@@ -45,13 +41,19 @@ class SettingsActivity : AppCompatActivity() {
             vm.saveColor(TEXT_COLOR_TOKEN, 0)
             vm.saveColor(BG_COLOR_TOKEN, 0)
             vm.saveColor(SELECTOR_COLOR_TOKEN, 0)
-            binding.selectorColorIcon.background = createGradient(selectorColor())
-            binding.bgColorIcon.background = createGradient(bgColor())
-            binding.textColorIcon.background = createGradient(textColor())
-            binding.main.setBackgroundColor(bgColor())
-            binding.backArrow.background = createGradient(textColor())
-            binding.textColorText.setTextColor(textColor())
+            setColors()
         }
+    }
+
+    private fun setColors() {
+        binding.selectorColorIcon.background = createGradient(selectorColor())
+        binding.bgColorIcon.background = createGradient(bgColor())
+        binding.textColorIcon.background = createGradient(textColor())
+        binding.textColorText.setTextColor(textColor())
+        binding.bgColorText.setTextColor(textColor())
+        binding.selectorColorText.setTextColor(textColor())
+        binding.main.setBackgroundColor(bgColor())
+        binding.backArrow.background = createGradient(textColor())
     }
 
     private fun showColorPicker(view: View) {
@@ -82,6 +84,8 @@ class SettingsActivity : AppCompatActivity() {
                 view.background = createGradient(color)
                 binding.backArrow.background = createGradient(color)
                 binding.textColorText.setTextColor(color)
+                binding.selectorColorText.setTextColor(color)
+                binding.bgColorText.setTextColor(color)
                 vm.saveColor(TEXT_COLOR_TOKEN, color)
             }
         }
@@ -89,17 +93,17 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun bgColor(): Int {
         val color = vm.getSavedColor(BG_COLOR_TOKEN)
-        return if (color == 0) Color.BLACK else color
+        return if (color == 0) Color.parseColor("#000000E4") else color
     }
 
     private fun textColor(): Int {
         val color = vm.getSavedColor((TEXT_COLOR_TOKEN))
-        return if (color == 0) Color.WHITE else color
+        return if (color == 0) Color.parseColor("#C8FFFFFF") else color
     }
 
     private fun selectorColor(): Int {
         val color = vm.getSavedColor((SELECTOR_COLOR_TOKEN))
-        return if (color == 0) Color.CYAN else color
+        return if (color == 0) Color.parseColor("#7E448CCB") else color
     }
 
     private fun createGradient(startColor: Int): GradientDrawable {

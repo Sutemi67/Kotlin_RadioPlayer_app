@@ -117,17 +117,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun bgColor(): Int {
         val color = vm.getSavedColor(BG_COLOR_TOKEN)
-        return if (color == 0) Color.BLACK else color
+        return if (color == 0) Color.parseColor("#000000E4") else color
     }
 
     private fun textColor(): Int {
         val color = vm.getSavedColor((TEXT_COLOR_TOKEN))
-        return if (color == 0) Color.WHITE else color
+        return if (color == 0) Color.parseColor("#C8FFFFFF") else color
     }
 
     private fun selectorColor(): Int {
         val color = vm.getSavedColor((SELECTOR_COLOR_TOKEN))
-        return if (color == 0) Color.CYAN else color
+        return if (color == 0) Color.parseColor("#7E448CCB") else color
     }
 
     private fun initializeMediaController() {

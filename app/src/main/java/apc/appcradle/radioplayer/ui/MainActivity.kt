@@ -10,8 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -195,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         if (selectorColor == 0) {
             return ContextCompat.getDrawable(
                 applicationContext,
-                R.drawable.playing_shape
+                R.drawable.shape_playing_station
             ) as GradientDrawable
         } else {
             val grad = GradientDrawable().apply {

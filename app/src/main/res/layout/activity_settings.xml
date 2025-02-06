@@ -36,7 +36,7 @@
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_marginEnd="25dp"
-        android:background="@drawable/playing_shape"
+        android:background="@drawable/shape_playing_station"
         app:layout_constraintBottom_toBottomOf="@+id/selectorColorText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/selectorColorText" />
@@ -63,4 +63,13 @@
         app:layout_constraintEnd_toEndOf="@+id/selectorColorIcon"
         app:layout_constraintTop_toTopOf="@+id/bgColorText" />
 
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:text="@string/clear_colors_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bgColorText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

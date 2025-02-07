@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat
 import apc.appcradle.radioplayer.constants.BG_COLOR_TOKEN
 import apc.appcradle.radioplayer.constants.SELECTOR_COLOR_TOKEN
 import apc.appcradle.radioplayer.constants.TEXT_COLOR_TOKEN
-import apc.appcradle.radioplayer.R
 import apc.appcradle.radioplayer.databinding.ActivitySettingsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import yuku.ambilwarna.AmbilWarnaDialog

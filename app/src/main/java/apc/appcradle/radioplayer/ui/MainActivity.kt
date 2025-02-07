@@ -199,7 +199,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-
     private fun setColors() {
         if (bgColor == 0) return else binding.main.setBackgroundColor(bgColor)
         if (textColor == 0) return else binding.warningText.setTextColor(textColor)

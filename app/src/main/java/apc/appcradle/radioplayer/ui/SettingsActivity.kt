@@ -31,9 +31,14 @@ class SettingsActivity : AppCompatActivity() {
 
         setColors()
 
-        binding.selectorColorIcon.setOnClickListener { view -> showColorPicker(view) }
-        binding.bgColorIcon.setOnClickListener { view -> showColorPicker(view) }
-        binding.textColorIcon.setOnClickListener { view -> showColorPicker(view) }
+        binding.selectorColorIcon.setOnClickListener { view ->
+            showColorPicker(
+                view,
+                selectorColor()
+            )
+        }
+        binding.bgColorIcon.setOnClickListener { view -> showColorPicker(view, bgColor()) }
+        binding.textColorIcon.setOnClickListener { view -> showColorPicker(view, textColor()) }
 
         binding.backArrow.setOnClickListener { finish() }
         binding.clearButton.setOnClickListener {
@@ -55,8 +60,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.backArrow.background = createGradient(textColor())
     }
 
-    private fun showColorPicker(view: View) {
-        val colorPicker = AmbilWarnaDialog(this, Color.WHITE,
+    private fun showColorPicker(view: View, startColor: Int) {
+        val colorPicker = AmbilWarnaDialog(this, startColor, true,
             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onCancel(dialog: AmbilWarnaDialog) {}
                 override fun onOk(dialog: AmbilWarnaDialog, color: Int) {

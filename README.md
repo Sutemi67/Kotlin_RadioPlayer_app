@@ -2,7 +2,8 @@
 
 A modern, user-friendly radio streaming application that allows you to listen to your favorite radio stations in the background and personalize the app's appearance with custom color schemes  Simple player using a MediaSession and ExoPlayer.
 
-![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Android-blue.svg)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sutemi67/Kotlin_RadioPlayer_app)
 
 ## Features ✨
 

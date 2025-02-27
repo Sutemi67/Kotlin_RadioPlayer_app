@@ -1,6 +1,7 @@
 package apc.appcradle.radioplayer.ui
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
@@ -16,7 +17,6 @@ import androidx.media3.session.MediaSessionService
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import apc.appcradle.radioplayer.constants.Enums
-import apc.appcradle.radioplayer.data.Repository
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -110,8 +110,23 @@ class PlaybackService : MediaSessionService(), MediaSession.Callback {
         }
         player = playerInstance!!
 
+        // Создаем Intent для запуска главной активности
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        // Создаем PendingIntent с флагами для новых версий Android
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         if (mediaSessionInstance == null) {
-            mediaSessionInstance = MediaSession.Builder(this, player).setCallback(this).build()
+            mediaSessionInstance = MediaSession.Builder(this, player)
+                .setCallback(this)
+                .setSessionActivity(pendingIntent)
+                .build()
         }
         mediaSession = mediaSessionInstance
         mediaSession?.setCustomLayout(notificationPlayerCustomCommandButtons)

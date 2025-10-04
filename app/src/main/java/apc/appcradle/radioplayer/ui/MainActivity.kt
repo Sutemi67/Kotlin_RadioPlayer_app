@@ -5,12 +5,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.media3.common.MediaItem
@@ -117,24 +118,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun bgColor(): Int {
         val color = vm.getSavedColor(BG_COLOR_TOKEN)
-        return if (color == 0) Color.parseColor("#E6000000") else color
+        return if (color == 0) "#E6000000".toColorInt() else color
     }
 
     private fun textColor(): Int {
         val color = vm.getSavedColor((TEXT_COLOR_TOKEN))
-        return if (color == 0) Color.parseColor("#C8FFFFFF") else color
+        return if (color == 0) "#C8FFFFFF".toColorInt() else color
     }
 
     private fun selectorColor(): Int {
         val color = vm.getSavedColor((SELECTOR_COLOR_TOKEN))
-        return if (color == 0) Color.parseColor("#7E448CCB") else color
+        return if (color == 0) "#7E448CCB".toColorInt() else color
     }
 
     private fun initializeMediaController() {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         mediaControllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         mediaControllerFuture?.apply {
-            addListener(Runnable {
+            addListener({
                 controller = get()
                 updateUIWithMediaController(controller)
             }, MoreExecutors.directExecutor())
@@ -144,7 +145,7 @@ class MainActivity : AppCompatActivity() {
     private fun playMedia() {
         val currentPlaylist = vm.getPlaylist()
         if (currentPlaylist.isEmpty() || pos !in currentPlaylist.indices) return
-        val image = Uri.parse("android.resource://${packageName}/${R.drawable.logo_main}")
+        val image = "android.resource://${packageName}/${R.drawable.logo_main}".toUri()
         val mediaItem = MediaItem.Builder()
             .setMediaId(currentPlaylist[pos].url)
             .setMediaMetadata(

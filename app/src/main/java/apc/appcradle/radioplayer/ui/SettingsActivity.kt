@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import apc.appcradle.radioplayer.constants.BG_COLOR_TOKEN
@@ -61,7 +62,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showColorPicker(view: View, startColor: Int) {
-        val colorPicker = AmbilWarnaDialog(this, startColor, true,
+        val colorPicker = AmbilWarnaDialog(
+            this, startColor, true,
             object : AmbilWarnaDialog.OnAmbilWarnaListener {
                 override fun onCancel(dialog: AmbilWarnaDialog) {}
                 override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
@@ -97,17 +99,17 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun bgColor(): Int {
         val color = vm.getSavedColor(BG_COLOR_TOKEN)
-        return if (color == 0) Color.parseColor("#E6000000") else color
+        return if (color == 0) "#E6000000".toColorInt() else color
     }
 
     private fun textColor(): Int {
         val color = vm.getSavedColor((TEXT_COLOR_TOKEN))
-        return if (color == 0) Color.parseColor("#C8FFFFFF") else color
+        return if (color == 0) "#C8FFFFFF".toColorInt() else color
     }
 
     private fun selectorColor(): Int {
         val color = vm.getSavedColor((SELECTOR_COLOR_TOKEN))
-        return if (color == 0) Color.parseColor("#7E448CCB") else color
+        return if (color == 0) "#7E448CCB".toColorInt() else color
     }
 
     private fun createGradient(startColor: Int): GradientDrawable {
